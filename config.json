@@ -1,14 +1,27 @@
 {
     "PDK": "sky130A",
     "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
-    "DESIGN_NAME": "uart_top",
+    "DESIGN_NAME": "mcu_top",
     "VERILOG_FILES": [
-        "dir::uart_tx.v",
-        "dir::uart_rx.v",
-        "dir::uart_top.v"
+        "rtl/alu.v",
+        "rtl/control.v",
+        "rtl/regfile.v",
+        "rtl/ram_16k.v",
+        "rtl/uart_tx.v",
+        "rtl/uart_rx.v",
+        "rtl/uart_top.v",
+        "rtl/uart_mmio_wrapper.v",
+        "rtl/apb_slave_ram.v",
+        "rtl/apb_slave_gpio.v",
+        "rtl/apb_slave_trap.v",
+        "rtl/apb_slave_uart.v",
+        "rtl/apb_interconnect.v",
+        "rtl/riscv_core.v",
+        "rtl/mcu_top.v"
     ],
     "CLOCK_PORT": "clk",
     "CLOCK_PERIOD": 10.0,
-    "FP_CORE_UTIL": 30,
+    "FP_CORE_UTIL": 40,
+    "SYNTH_STRATEGY": "DELAY 0",
     "RT_MAX_LAYER": "met5"
 }

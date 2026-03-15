@@ -3,6 +3,7 @@ module uart_top #(
 )(
     input clk,
     input rst,
+    input uart_ce,
     
     // Transmitter Interface
     input tx_start,
@@ -20,6 +21,7 @@ module uart_top #(
     uart_tx #(.CLKS_PER_BIT(CLKS_PER_BIT)) transmitter (
         .clk(clk),
         .rst(rst),
+        .uart_ce(uart_ce),
         .start(tx_start),
         .data_in(tx_data_in),
         .tx(uart_tx_out),
@@ -30,6 +32,7 @@ module uart_top #(
     uart_rx #(.CLKS_PER_BIT(CLKS_PER_BIT)) receiver (
         .clk(clk),
         .rst(rst),
+        .uart_ce(uart_ce),
         .rx(uart_rx_in),
         .data_out(rx_data_out),
         .rx_done(rx_done)

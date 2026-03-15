@@ -2,10 +2,15 @@ module uart_mmio_wrapper (
     input clk,
     input rst,
     // Bus Interface
-    input [3:0]  addr,      // 4-bit address offset
-    input [31:0] wdata,     // Data from CPU
-    input        we,        // Write Enable
+    input [3:0]  addr,       // 4-bit address offset
+    input [31:0] wdata,      // Data from CPU
+    input        we,         // Write Enable
     output reg [31:0] rdata, // Data to CPU
+    
+    // Clock enable from APB wrapper (for power gating)
+    input        uart_ce,
+    // Activity back to APB wrapper (TX/RX busy)
+    output       uart_active,
     
     // External Pins
     output uart_tx,
@@ -20,7 +25,9 @@ module uart_mmio_wrapper (
 
     // Instantiate your existing UART Transceiver
     uart_top #(.CLKS_PER_BIT(87)) core_uart (
-        .clk(clk), .rst(rst),
+        .clk(clk),
+        .rst(rst),
+        .uart_ce(uart_ce),
         .tx_start(tx_start),
         .tx_data_in(wdata[7:0]),
         .tx_busy(tx_busy),
@@ -30,14 +37,16 @@ module uart_mmio_wrapper (
         .rx_done(rx_done)
     );
 
+    assign uart_active = tx_busy | rx_done;
+
     // Address Decoding Logic
     always @(posedge clk) begin
-        tx_start <= 0; // Default: don't pulse start
+        tx_start <= 1'b0; // Default: don't pulse start
         if (rst) begin
-            rdata <= 0;
+            rdata <= 32'b0;
         end else if (we) begin
             case (addr)
-                4'h0: tx_start <= 1; // Writing to Offset 0 triggers TX
+                4'h0: tx_start <= 1'b1; // Writing to Offset 0 triggers TX
                 // Other registers could go here
             endcase
         end else begin
